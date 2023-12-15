@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeWPF
 {
@@ -26,22 +22,6 @@ namespace SnakeWPF
         public Direction Opposite()
         {
             return new Direction(-RowOffset, -ColumnOffset);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Direction)obj);
-        }
-        
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (RowOffset * 397) ^ ColumnOffset;
-            }
         }
         
         public static bool operator ==(Direction left, Direction right)
