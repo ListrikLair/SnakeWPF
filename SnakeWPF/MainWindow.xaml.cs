@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,11 +32,13 @@ namespace SnakeWPF
         private readonly Image[,] gridImages;
         private GameState gameState;
         private bool gameRunning;
-        private int highScore;
+        public int highScore;
+
         public MainWindow()
         {
             InitializeComponent();
             gridImages = SetupGrid();
+            ReadFromFile();
             gameState = new GameState(rows, cols);
         }
 
@@ -73,16 +76,16 @@ namespace SnakeWPF
 
             switch (e.Key)
             {
-                case Key.A:
+                case Key.A or Key.Left:
                     gameState.ChangeDirection(Direction.Left);
                     break;
-                case Key.D:
+                case Key.D or Key.Right:
                     gameState.ChangeDirection(Direction.Right);
                     break;
-                case Key.W:
+                case Key.W or Key.Up:
                     gameState.ChangeDirection(Direction.Up);
                     break;
-                case Key.S:
+                case Key.S or Key.Down:
                     gameState.ChangeDirection(Direction.Down);
                     break;
             }
@@ -185,8 +188,29 @@ namespace SnakeWPF
                 highScore = gameState.Score;
             }
             HighScore.Text = $"High Score: {highScore}";
+            SaveToFile();
             Overlay.Visibility = Visibility.Visible;
             OverlayText.Text = "PRESS ANY KEY TO START";
+        }
+
+        private void SaveToFile() {
+            var fileName = "SavedScore.txt";
+
+            using StreamWriter sw = File.CreateText(fileName);
+            sw.Write(highScore);
+        }
+
+        private void ReadFromFile() {
+            var inputFileName = "SavedScore.txt";
+            int fileContents;
+            if (!File.Exists(inputFileName))
+            { return;}
+            using(StreamReader sr = File.OpenText(inputFileName)) {
+                fileContents = int.Parse(sr.ReadToEnd());
+            }
+
+            highScore = fileContents;
+            HighScore.Text = $"High Score: {highScore}";
         }
     }
 }
